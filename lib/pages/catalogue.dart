@@ -7,7 +7,6 @@ final productProvider = StateNotifierProvider<ProductNotifier, List<Product>>(
   (ref) => ProductNotifier(),
 );
 
-
 // Make MyHomePage a ConsumerWidget
 class MyHomePage extends ConsumerWidget {
   const MyHomePage({super.key, required this.title});
@@ -42,19 +41,56 @@ class MyHomePage extends ConsumerWidget {
                 child: const Text('Fetch Products'),
               ),
             )
-          : ListView.builder(
+          : GridView.builder(
               itemCount: productList.length,
               itemBuilder: (context, index) {
                 final product = productList[index];
-                return ListTile(
-                  leading: Image.network(product.thumbnail),
-                  title: Text(product.title),
-                  subtitle: Text(
-                    'Brand: ${product.brand}\nPrice: \$${product.price}',
+                return Card(
+                  elevation: 5, // Adds shadow effect
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  trailing: Text('${product.discountPercentage}% off'),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          product.thumbnail,
+                          fit: BoxFit.cover,
+                          height: 120,
+                          width: double.infinity,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              product.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text('Brand: ${product.brand}'),
+                            Text('Price: \$${product.price}'),
+                            Text('${product.discountPercentage}% off'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // 2 items per row
+                crossAxisSpacing: 10, // Spacing between columns
+                mainAxisSpacing: 10, // Spacing between rows
+                childAspectRatio:
+                    0.7, // Aspect ratio of each item (height vs width)
+              ),
             ),
     );
   }

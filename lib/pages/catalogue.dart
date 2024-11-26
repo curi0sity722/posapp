@@ -7,7 +7,6 @@ final productProvider = StateNotifierProvider<ProductNotifier, List<Product>>(
   (ref) => ProductNotifier(),
 );
 
-// Make MyHomePage a ConsumerWidget
 class MyHomePage extends ConsumerWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -18,6 +17,15 @@ class MyHomePage extends ConsumerWidget {
     // Watch the product provider
     final productList = ref.watch(productProvider);
 
+    // Fetch the products after the widget is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (productList.isEmpty) {
+        ref.read(productProvider.notifier).fetchProducts();
+      }
+    });
+
+    double width = MediaQuery.sizeOf(context).width;
+    double height = MediaQuery.sizeOf(context).height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -51,14 +59,15 @@ class MyHomePage extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.network(
                           product.thumbnail,
-                          fit: BoxFit.cover,
-                          height: 120,
+                          fit: BoxFit.fitHeight,
+                          height: height * 0.15,
                           width: double.infinity,
                         ),
                       ),
@@ -66,20 +75,47 @@ class MyHomePage extends ConsumerWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              product.title,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+                            Column(
+                              children: [
+                                Text(
+                                  product.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  maxLines: 2, // Limits the text to two lines
+                                  overflow: TextOverflow
+                                      .ellipsis, // Adds '...' when the text exceeds two lines
+                                ),
+                                Text('Brand: ${product.brand}'),
+                                Text('Price: \$${product.price}'),
+                                Text('${product.discountPercentage}% off'),
+                              ],
                             ),
-                            Text('Brand: ${product.brand}'),
-                            Text('Price: \$${product.price}'),
-                            Text('${product.discountPercentage}% off'),
                           ],
                         ),
                       ),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Action for button press
+                        },
+                        style: ElevatedButton.styleFrom(
+                          // foregroundColor: Colors.white,
+                          backgroundColor: Colors.purple.shade100, // Text color
+                          elevation: 1, // Control the elevation (shadow)
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                10), // Control boundary (rounded corners)
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12), // Control padding
+                          minimumSize:
+                              Size(150, 25), // Control the button's size
+                        ),
+                        child: const Text('Add to Cart +'),
+                      )
                     ],
                   ),
                 );

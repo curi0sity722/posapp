@@ -27,7 +27,7 @@ Navigate to the project directory and run the following command to install the r
 ```bash
 flutter pub get
 ```
-### 3.Run the app
+### 3. Run the app
 Once the dependencies are installed, you can run the app on your emulator or physical device:
 ```bash
 flutter run

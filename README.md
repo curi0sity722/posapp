@@ -1,16 +1,22 @@
-# posapp
+# Flutter Shopping Cart App
 
-A new Flutter project.
+A Flutter-based shopping cart app that fetches product data from an API and allows users to add, update, and remove items from their cart. It uses Riverpod for state management to handle the cart's state and calculate discounts.
 
-## Getting Started
+## Features
+- **Product Display**: Displays a list of products fetched from an API.
+- **Add to Cart**: Users can add products to the shopping cart.
+- **Increase/Decrease Quantity**: Users can increase or decrease the quantity of each product in the cart.
+- **Price and Discount**: The original price of a product is shown with a strikethrough, and the discounted price is displayed next to it.
+- **Shopping Cart**: The cart page shows all the products added, their quantities, and the total price.
+- **Badge on Cart Icon**: The cart icon shows the number of items in the cart.
 
-This project is a starting point for a Flutter application.
+## Requirements
+- Flutter 3.x
+- Dart 2.x
 
-A few resources to get you started if this is your first Flutter project:
+## Setup Instructions
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 1. Clone the repository
+Clone this repository to your local machine:
+```bash
+git clone https://github.com/yourusername/flutter-shopping-cart.git

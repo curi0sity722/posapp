@@ -20,8 +20,15 @@ A Flutter-based shopping cart app that fetches product data from an API and allo
 Clone this repository to your local machine:
 ```bash
 git clone https://github.com/yourusername/flutter-shopping-cart.git
+```
 
+### 2. Install dependencies
+Navigate to the project directory and run the following command to install the required dependencies:
+```bash
 flutter pub get
-
+```
+### 3.Run the app
+Once the dependencies are installed, you can run the app on your emulator or physical device:
+```bash
 flutter run
 ```

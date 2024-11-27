@@ -20,3 +20,8 @@ A Flutter-based shopping cart app that fetches product data from an API and allo
 Clone this repository to your local machine:
 ```bash
 git clone https://github.com/yourusername/flutter-shopping-cart.git
+
+flutter pub get
+
+flutter run
+```

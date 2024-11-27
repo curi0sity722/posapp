@@ -11,8 +11,8 @@ A Flutter-based shopping cart app that fetches product data from an API and allo
 - **Badge on Cart Icon**: The cart icon shows the number of items in the cart.
 
 ## Requirements
-- Flutter 3.x
-- Dart 2.x
+- Flutter 3.22.1
+- Dart 3.4.1 • DevTools 2.34.3
 
 ## Setup Instructions
 

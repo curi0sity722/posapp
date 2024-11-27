@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:posapp/api/fetch_products.dart';
 import 'package:posapp/api/product.dart';
+import 'package:posapp/pages/cart.dart';
+import 'package:badges/badges.dart' as badges;
 
 final productProvider = StateNotifierProvider<ProductNotifier, List<Product>>(
   (ref) => ProductNotifier(),
@@ -14,18 +16,11 @@ class MyHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the product provider
     final productList = ref.watch(productProvider);
-
-    // Fetch the products after the widget is initialized
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (productList.isEmpty) {
-        ref.read(productProvider.notifier).fetchProducts();
-      }
-    });
 
     double width = MediaQuery.sizeOf(context).width;
     double height = MediaQuery.sizeOf(context).height;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -35,7 +30,10 @@ class MyHomePage extends ConsumerWidget {
             icon: const Icon(Icons.shopping_cart),
             tooltip: 'Open shopping cart',
             onPressed: () {
-              // handle the press
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CartPage()),
+              );
             },
           ),
         ],
@@ -53,8 +51,13 @@ class MyHomePage extends ConsumerWidget {
               itemCount: productList.length,
               itemBuilder: (context, index) {
                 final product = productList[index];
+
+                // Calculate discounted price
+                double discountedPrice = product.price *
+                    (1 - product.discountPercentage / 100);
+
                 return Card(
-                  elevation: 5, // Adds shadow effect
+                  elevation: 5,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -77,21 +80,34 @@ class MyHomePage extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
+                            Text(
+                              product.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text('Brand: ${product.brand}'),
+                            // Display the original price with strikethrough
+                            Row(
                               children: [
                                 Text(
-                                  product.title,
+                                  '\$${product.price.toStringAsFixed(2)}',
                                   style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    decoration: TextDecoration.lineThrough,
                                   ),
-                                  maxLines: 2, // Limits the text to two lines
-                                  overflow: TextOverflow
-                                      .ellipsis, // Adds '...' when the text exceeds two lines
                                 ),
-                                Text('Brand: ${product.brand}'),
-                                Text('Price: \$${product.price}'),
-                                Text('${product.discountPercentage}% off'),
+                                // Display the discounted price
+                                SizedBox(width: width * 0.01,),
+                                Text(
+                                  '\$${discountedPrice.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    color: Colors.green, // Color for discounted price
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                           ],
@@ -99,33 +115,29 @@ class MyHomePage extends ConsumerWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          // Action for button press
+                          ref.read(cartProvider.notifier).addToCart(product);
                         },
                         style: ElevatedButton.styleFrom(
-                          // foregroundColor: Colors.white,
-                          backgroundColor: Colors.purple.shade100, // Text color
-                          elevation: 1, // Control the elevation (shadow)
+                          backgroundColor: Colors.purple.shade100,
+                          elevation: 1,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                10), // Control boundary (rounded corners)
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12), // Control padding
-                          minimumSize:
-                              Size(150, 25), // Control the button's size
+                              horizontal: 20, vertical: 12),
+                          minimumSize: Size(150, 25),
                         ),
                         child: const Text('Add to Cart +'),
-                      )
+                      ),
                     ],
                   ),
                 );
               },
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // 2 items per row
-                crossAxisSpacing: 10, // Spacing between columns
-                mainAxisSpacing: 10, // Spacing between rows
-                childAspectRatio:
-                    0.7, // Aspect ratio of each item (height vs width)
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 0.7,
               ),
             ),
     );
